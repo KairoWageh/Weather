@@ -21,8 +21,12 @@ class WeatherController extends Controller
 
     public function getWeather(Request $request)
     {
-        $search = $request->search;
-        $weather = $this->weatherService->getWeather($search);
+        $validated = $request->validate([
+            'search' => ['required']
+        ], [
+            'search.required' => 'Enter city name or zip code'
+        ]);
+        $weather = $this->weatherService->getWeather($validated['search']);
         $html = view('weather_table')->with([
             'weather_data' => $weather
         ])->render();
